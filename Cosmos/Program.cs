@@ -1,6 +1,8 @@
+using Cosmos;
 using Cosmos.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Serilog;
 
@@ -56,6 +58,16 @@ builder.Services.AddAuthentication( options =>
 });
 
 builder.Services.AddAuthorization();
+
+//Database
+var connectionString = config.ConnectionString;
+builder.Services.AddDbContext<DatabaseContext>(options => options
+    .UseMySQL(connectionString));
+
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseQueryStrings = true;
+});
 
 var app = builder.Build();
 

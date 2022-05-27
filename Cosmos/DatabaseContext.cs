@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Cosmos.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cosmos
 {
@@ -14,6 +15,8 @@ namespace Cosmos
             loggerFactory = _loggerFactory;
             httpContextAccessor = _httpContextAccessor;
         }
+
+        public DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
