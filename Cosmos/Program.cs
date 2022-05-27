@@ -6,7 +6,6 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
 
 Config config = new Config();
 
@@ -32,7 +31,7 @@ builder.Services.AddAuthentication( options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
-}).AddOpenIdConnect("OpenIdConnect", "Universe Open ID Connect", options =>
+}).AddOpenIdConnect("OpenIdConnect", options =>
 {
     options.Authority = config.Authentication.Authority;
     options.ClientId = config.Authentication.ClientId;
@@ -48,10 +47,14 @@ builder.Services.AddAuthentication( options =>
     options.RequireHttpsMetadata = config.Authentication.RequireHttpsMetadata;
 }).AddCookie( options =>
 {
-    options.Cookie.Expiration = TimeSpan.FromHours(config.Authentication.CookieExpiration);
+    //options.Cookie.Expiration = TimeSpan.FromHours(config.Authentication.CookieExpiration);
     options.ExpireTimeSpan = TimeSpan.FromHours(config.Authentication.ExpireTimeSpan);
     options.SlidingExpiration = config.Authentication.SlidingExpiration;
 });
+
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -68,6 +71,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",

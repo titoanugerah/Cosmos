@@ -23,8 +23,8 @@
         public bool SaveTokens { set; get; }
         public bool GetClaimsFromUserInfoEndpoint { set; get; }
         public bool RequireHttpsMetadata { set; get; }
-        public int CookieExpiration { set; get; }
         public int ExpireTimeSpan { set; get; }
+        public string RedirectUri { set; get; }
         public bool SlidingExpiration { set; get; }
     }
 }
