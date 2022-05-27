@@ -6,9 +6,9 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 Config config = new Config();
 
+//Logger
 Serilog.Core.Logger logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
@@ -22,6 +22,9 @@ builder.Logging
 
 //Get config
 config.Authentication = builder.Configuration.GetSection("Authentication").Get<Authentication>();
+
+//Http Context Accessor
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
