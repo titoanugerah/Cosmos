@@ -2,9 +2,24 @@ using Cosmos.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var app = builder.Build();
+
 Config config = new Config();
+
+Serilog.Core.Logger logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Logging
+    .ClearProviders();
+
+builder.Logging
+    .AddSerilog(logger);
 
 //Get config
 config.Authentication = builder.Configuration.GetSection("Authentication").Get<Authentication>();
@@ -37,8 +52,6 @@ builder.Services.AddAuthentication( options =>
     options.ExpireTimeSpan = TimeSpan.FromHours(config.Authentication.ExpireTimeSpan);
     options.SlidingExpiration = config.Authentication.SlidingExpiration;
 });
-
-var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
