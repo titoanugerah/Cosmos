@@ -1,7 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Cosmos</title>
+	<title>@Configuration.GetSection("Template")["SiteName"]</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<link rel="icon" href="~/img/icon.ico" type="image/x-icon"/>
@@ -18,11 +22,11 @@
 	<link rel="stylesheet" href="~/css/bootstrap.min.css">
 	<link rel="stylesheet" href="~/css/atlantis.css">
 </head>
-<body>
+<body data-background-color = "@Configuration.GetSection("Template")["BodyColor"]">
 	<div class="wrapper">
 		<div class="main-header">
-			<div class="logo-header" data-background-color="blue">				
-				<a href="index.html" class="logo">
+			<div class="logo-header" data-background-color= "@Configuration.GetSection("Template")["LogoHeaderColor"]">				
+				<a asp-controller="Home" asp-action="Index" class="logo">
 					<img src="~/img/logo.svg" alt="navbar brand" class="navbar-brand">
 				</a>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,10 +41,13 @@
 					</button>
 				</div>
 			</div>
-			<partial name="_NavigationBar" />					
+			<nav class="navbar navbar-header navbar-expand-lg" data-background-color = "@Configuration.GetSection("Template")["NavBarHeaderColor"]">							
+				<partial name="_NavigationBar" />					
+			</nav>
+
 		</div>
 
-		<div class="sidebar sidebar-style-2">			
+		<div class="sidebar sidebar-style-2" data-background-color = "@Configuration.GetSection("Template")["SideBarColor"]">			
 			<div class="sidebar-wrapper scrollbar scrollbar-inner">
 				<div class="sidebar-content">
 					<div class="user">
@@ -85,14 +92,14 @@
 					<nav class="pull-left">
 						<ul class="nav">
 							<li class="nav-item">
-								<a class="nav-link" href="">
-									Indonesia Epson Industry
+								<a class="nav-link" href="@Configuration.GetSection("Template")["CopyrightUrl"]">
+									@Configuration.GetSection("Template")["CopyrightName"]
 								</a>
 							</li>
 						</ul>
 					</nav>
 					<div class="copyright ml-auto">
-						2022, by <a href="mailto:tito.anugerah@epson.co.id">Tito Anugerah</a>
+						@Configuration.GetSection("Template")["ReleaseYear"], by <a href="@Configuration.GetSection("Template")["DeveloperUrl"]"> @Configuration.GetSection("Template")["DeveloperName"] </a>
 					</div>				
 				</div>
 			</footer>
