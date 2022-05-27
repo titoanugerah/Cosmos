@@ -1,7 +1,42 @@
+using Cosmos.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+
 var builder = WebApplication.CreateBuilder(args);
+Config config = new Config();
+
+//Get config
+config.Authentication = builder.Configuration.GetSection("Authentication").Get<Authentication>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+//Authentication
+builder.Services.AddAuthentication( options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
+}).AddOpenIdConnect("OpenIdConnect", "Universe Open ID Connect", options =>
+{
+    options.Authority = config.Authentication.Authority;
+    options.ClientId = config.Authentication.ClientId;
+    options.ClientSecret = config.Authentication.ClientSecret;
+    foreach (string scope in config.Authentication.Scopes)
+    {
+        options.Scope.Add(scope);
+    }
+    options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+    options.CallbackPath = config.Authentication.CallbackPath;
+    options.SaveTokens = config.Authentication.SaveTokens;
+    options.GetClaimsFromUserInfoEndpoint = config.Authentication.GetClaimsFromUserInfoEndpoint;
+    options.RequireHttpsMetadata = config.Authentication.RequireHttpsMetadata;
+}).AddCookie( options =>
+{
+    options.Cookie.Expiration = TimeSpan.FromHours(config.Authentication.CookieExpiration);
+    options.ExpireTimeSpan = TimeSpan.FromHours(config.Authentication.ExpireTimeSpan);
+    options.SlidingExpiration = config.Authentication.SlidingExpiration;
+});
 
 var app = builder.Build();
 
@@ -14,6 +49,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
