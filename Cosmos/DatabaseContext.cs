@@ -9,7 +9,7 @@ namespace Cosmos
         private readonly ILoggerFactory loggerFactory;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public DatabaseContext (IConfiguration _config, ILoggerFactory _loggerFactory, IHttpContextAccessor _httpContextAccessor)
+        public DatabaseContext (DbContextOptions<DatabaseContext> options, IConfiguration _config, ILoggerFactory _loggerFactory, IHttpContextAccessor _httpContextAccessor) : base(options)
         {
             config = _config;
             loggerFactory = _loggerFactory;

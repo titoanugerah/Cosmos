@@ -10,13 +10,15 @@ namespace Cosmos.Controllers
     public class AuthController : Controller
     {
         private readonly ILogger logger;
+        private readonly DatabaseContext databaseContext;
         private const string AuthSchemes =
             CookieAuthenticationDefaults.AuthenticationScheme + "," +
             OpenIdConnectDefaults.AuthenticationScheme;
 
-        public AuthController(ILogger<AuthController> _logger)
+        public AuthController(ILogger<AuthController> _logger, DatabaseContext _databaseContext)
         {
             logger = _logger;
+            databaseContext = _databaseContext;
         }
 
         [Authorize(AuthenticationSchemes = AuthSchemes)]
@@ -27,6 +29,7 @@ namespace Cosmos.Controllers
                 if (User.Identity.IsAuthenticated)
                 {
                     var authenticatedUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    databaseContext.User.Where(x => x.Guid == authenticatedUserId).Any();
                 }
                 return RedirectToAction("Index", "Home");
             }

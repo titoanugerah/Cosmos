@@ -60,7 +60,7 @@ builder.Services.AddAuthentication( options =>
 builder.Services.AddAuthorization();
 
 //Database
-var connectionString = config.ConnectionString;
+var connectionString = builder.Configuration.GetConnectionString("CosmosDB");
 builder.Services.AddDbContext<DatabaseContext>(options => options
     .UseMySQL(connectionString));
 
